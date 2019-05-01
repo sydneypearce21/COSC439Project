@@ -32,12 +32,12 @@ public class Main {
 		sim.timeStepUntil(0);
 		sim.printMemory();
 	
-		TIME = 2000;
+		TIME = 500;
 		while (TIME > 0) {
-			System.out.print("memsim> ");
+			//System.out.print("memsim> ");
 			sim.timeStepUntil(TIME);
 			
-			//TIME--;
+			TIME--;
 		}
 		
 		System.out.println("No more events to process... exiting!");

@@ -28,7 +28,7 @@ public abstract class MemorySimulatorBase {
 		Random rand = new Random();
 		main_memory = new char[1024];
 		
-		for( int i = 0; i < rand.nextInt(100) +1 ; i++) {
+		for( int i = 0; i < 100 ; i++) {
 			String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 			char randomChar = alphabet.charAt(rand.nextInt(alphabet.length()));
 			
@@ -38,7 +38,7 @@ public abstract class MemorySimulatorBase {
 			while(startTime >= endTime )
 				endTime = rand.nextInt(500)+1;
 			
-			Process p = new Process(randomChar, rand.nextInt(500)+ 1, startTime, endTime );
+			Process p = new Process(randomChar, rand.nextInt(100)+ 1, startTime, endTime );
 			processes.add(p) ;
 		}
 		initializeMainMemory();
@@ -64,7 +64,7 @@ public abstract class MemorySimulatorBase {
 	 * handling processes leaving and entering the system.
 	 * NOTE: Not used now that the project specifications have changed.
 	 */
-	public void timeStep() {
+	/*public void timeStep() {
 		CURRENT_TIME++;
 		while (!eventOccursAt(CURRENT_TIME)) {
 			debugPrintln("Fast-forwarding past boring time " + CURRENT_TIME);
@@ -97,7 +97,7 @@ public abstract class MemorySimulatorBase {
 	
 	
 	public void wait(int t) {
-		while (CURRENT_TIME < t) {
+		while (CURRENT_TIME < t && !didAProcessEnd(CURRENT_TIME)) {
 			CURRENT_TIME++;
 			while (!eventOccursAt(CURRENT_TIME) && CURRENT_TIME < t) {
 				debugPrintln("Fast-forwarding past boring time " + CURRENT_TIME);
@@ -119,7 +119,7 @@ public abstract class MemorySimulatorBase {
 				processes.remove(p);
 			}
 		}
-	}
+	}*/
 	
 
 	/**
@@ -139,11 +139,12 @@ public abstract class MemorySimulatorBase {
 			//Processes exit the system
 			ArrayList<Process> toRemove = new ArrayList<Process>();
 			for (Process p : processes) {
-				if (p.getEndTime() == CURRENT_TIME) {
+				
+				// made <= to deal with processes that have their end time pass due to waiting to enter into memory
+				if (p.getEndTime() <= CURRENT_TIME) {
 					debugPrintln("Removing process " + p.getPid());
 					removeFromMemory(p);
 					toRemove.add(p);
-					printMemory();
 				}
 			} 
 			for (Process p : toRemove) {
@@ -176,6 +177,16 @@ public abstract class MemorySimulatorBase {
 		return false;
 	}
 	
+	
+	private boolean didAProcessEnd(int time) {
+		for (Process p : processes) {
+			if (p.getEndTime() == time) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	/**
 	 * Put a process into memory
 	 * @param p The process to put into memory
@@ -189,7 +200,7 @@ public abstract class MemorySimulatorBase {
 			Random rand = new Random();
 			int count = CURRENT_TIME ;
 			while(targetSlot == -1) {
-					wait(count++);
+				timeStepUntil(count++);
 				targetSlot = getNextSlot(p.getSize());
 			}
 		}
