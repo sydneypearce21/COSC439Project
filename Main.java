@@ -37,7 +37,7 @@ public class Main {
 			System.out.print("memsim> ");
 			sim.timeStepUntil(TIME);
 			
-			TIME--;
+			//TIME--;
 		}
 		
 		System.out.println("No more events to process... exiting!");
