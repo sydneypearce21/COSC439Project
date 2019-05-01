@@ -3,6 +3,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Starter code for a memory simulator.
@@ -14,9 +15,9 @@ public abstract class MemorySimulatorBase {
 	protected int CURRENT_TIME = -1;
 	
 	protected char[] main_memory;
-	protected ArrayList<Process> processes = new ArrayList<Process>();
+	protected CopyOnWriteArrayList<Process> processes = new CopyOnWriteArrayList<Process>();
 	
-	protected static final boolean MEMSIM_DEBUG = false;
+	protected static final boolean MEMSIM_DEBUG = true;
 	
 	/**
 	 * Default constructor that takes an input file
@@ -27,10 +28,10 @@ public abstract class MemorySimulatorBase {
 		Random rand = new Random();
 		main_memory = new char[1024];
 		
-		for( int i = 0; i < rand.nextInt(1000) +1 ; i++) {
+		for( int i = 0; i < rand.nextInt(100) +1 ; i++) {
 			String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 			char randomChar = alphabet.charAt(rand.nextInt(alphabet.length()));
-			Process p = new Process(randomChar, rand.nextInt(200)+ 1, rand.nextInt(1000)+1, rand.nextInt(1000)+1);
+			Process p = new Process(randomChar, rand.nextInt(500)+ 1, rand.nextInt(1000)+1, rand.nextInt(1000)+1);
 			processes.add(p) ;
 		}
 		initializeMainMemory();
@@ -86,6 +87,33 @@ public abstract class MemorySimulatorBase {
 			}
 		}
 	}
+	
+	
+	public void wait(int t) {
+		while (CURRENT_TIME < t) {
+			CURRENT_TIME++;
+			while (!eventOccursAt(CURRENT_TIME) && CURRENT_TIME < t) {
+				debugPrintln("Fast-forwarding past boring time " + CURRENT_TIME);
+				CURRENT_TIME++;
+			}
+			
+			debugPrintln("=========== TIME IS NOW " + CURRENT_TIME + " ============");
+			
+			//Processes exit the system
+			ArrayList<Process> toRemove = new ArrayList<Process>();
+			for (Process p : processes) {
+				if (p.getEndTime() == CURRENT_TIME) {
+					debugPrintln("Removing process " + p.getPid());
+					removeFromMemory(p);
+					toRemove.add(p);
+				}
+			} 
+			for (Process p : toRemove) {
+				processes.remove(p);
+			}
+		}
+	}
+	
 
 	/**
 	 * Move the simulator into the future
@@ -148,8 +176,12 @@ public abstract class MemorySimulatorBase {
 		if (targetSlot == -1) {
 			defragment();
 			targetSlot = getNextSlot(p.getSize());
-			if (targetSlot == -1) {
-				Externals.outOfMemoryExit();
+			
+			Random rand = new Random();
+			int count = CURRENT_TIME ;
+			while(targetSlot == -1) {
+				wait(count++);
+				targetSlot = getNextSlot(p.getSize());
 			}
 		}
 		debugPrintln("Got a target slot of " + targetSlot + " for pid " + p.getPid());
