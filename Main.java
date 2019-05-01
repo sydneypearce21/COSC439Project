@@ -5,6 +5,9 @@
  * including managing user input and timestep control.
  */
 public class Main {
+	
+	static int TIME;
+	
 	public static void main( String[] args ) {
 		if (args.length != 1) {
 			Externals.invalidUsageExit();
@@ -29,14 +32,12 @@ public class Main {
 		sim.timeStepUntil(0);
 		sim.printMemory();
 	
-		int count = 0;
-		while (count > -1) {
+		TIME = 2000;
+		while (TIME > 0) {
 			System.out.print("memsim> ");
+			sim.timeStepUntil(TIME);
 			
-			count++;
-			
-			sim.timeStepUntil(count);
-			sim.printMemory();
+			TIME--;
 		}
 		
 		System.out.println("No more events to process... exiting!");

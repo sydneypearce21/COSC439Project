@@ -31,7 +31,14 @@ public abstract class MemorySimulatorBase {
 		for( int i = 0; i < rand.nextInt(100) +1 ; i++) {
 			String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 			char randomChar = alphabet.charAt(rand.nextInt(alphabet.length()));
-			Process p = new Process(randomChar, rand.nextInt(500)+ 1, rand.nextInt(1000)+1, rand.nextInt(1000)+1);
+			
+			int startTime = rand.nextInt(500) + 1;
+			int endTime = rand.nextInt(500)+1;
+			
+			while(startTime >= endTime )
+				endTime = rand.nextInt(500)+1;
+			
+			Process p = new Process(randomChar, rand.nextInt(500)+ 1, startTime, endTime );
 			processes.add(p) ;
 		}
 		initializeMainMemory();
@@ -97,7 +104,7 @@ public abstract class MemorySimulatorBase {
 				CURRENT_TIME++;
 			}
 			
-			debugPrintln("=========== TIME IS NOW " + CURRENT_TIME + " ============");
+			debugPrintln("=========== Wait IS NOW " + CURRENT_TIME + " ============");
 			
 			//Processes exit the system
 			ArrayList<Process> toRemove = new ArrayList<Process>();
@@ -136,6 +143,7 @@ public abstract class MemorySimulatorBase {
 					debugPrintln("Removing process " + p.getPid());
 					removeFromMemory(p);
 					toRemove.add(p);
+					printMemory();
 				}
 			} 
 			for (Process p : toRemove) {
@@ -147,6 +155,7 @@ public abstract class MemorySimulatorBase {
 				if (p.getStartTime() == CURRENT_TIME) {
 					debugPrintln("Adding process " + p.getPid());
 					putInMemory(p);
+					printMemory();
 				}
 			}
 		}
@@ -180,7 +189,7 @@ public abstract class MemorySimulatorBase {
 			Random rand = new Random();
 			int count = CURRENT_TIME ;
 			while(targetSlot == -1) {
-				wait(count++);
+					wait(count++);
 				targetSlot = getNextSlot(p.getSize());
 			}
 		}
