@@ -69,4 +69,12 @@ public class Process implements Comparable<Process> {
 			return 1;
 		}		
 	}
+	
+	public boolean samePid(Process o) {
+		if (this.pid == o.pid)
+			return true;
+		else
+			return false;		
+	}
+	
 }
