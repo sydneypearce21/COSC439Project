@@ -22,4 +22,9 @@ public class Externals {
 		System.err.println("OUT OF MEMORY... exiting!");
 		System.exit(1);
 	}
+	
+	public static void endOfSimulation() {
+		System.err.println("end of simulation.");
+		System.exit(1);
+	}
 }

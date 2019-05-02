@@ -35,7 +35,7 @@ public abstract class MemorySimulatorBase {
 
 	
 
-	protected static final boolean MEMSIM_DEBUG = false;
+	protected static final boolean MEMSIM_DEBUG = true;
 	
 	
 	
@@ -131,7 +131,7 @@ public abstract class MemorySimulatorBase {
 
 	 */
 
-	/*public void timeStep() {
+	public void timeStep() {
 
 		CURRENT_TIME++;
 
@@ -197,7 +197,7 @@ public abstract class MemorySimulatorBase {
 
 	public void wait(int t) {
 
-		while (CURRENT_TIME < t && !didAProcessEnd(CURRENT_TIME)) {
+		while (CURRENT_TIME < t) {
 
 			CURRENT_TIME++;
 
@@ -211,7 +211,7 @@ public abstract class MemorySimulatorBase {
 
 			
 
-			debugPrintln("=========== Wait IS NOW " + CURRENT_TIME + " ============");
+			debugPrintln("=========== WAIT IS NOW " + CURRENT_TIME + " ============");
 
 			
 
@@ -221,7 +221,11 @@ public abstract class MemorySimulatorBase {
 
 			for (Process p : processes) {
 
-				if (p.getEndTime() == CURRENT_TIME) {
+				
+
+				// made <= to deal with processes that have their end time pass due to waiting to enter into memory
+
+				if (p.getEndTime() <= CURRENT_TIME) {
 
 					debugPrintln("Removing process " + p.getPid());
 
@@ -238,10 +242,9 @@ public abstract class MemorySimulatorBase {
 				processes.remove(p);
 
 			}
-
 		}
 
-	}*/
+	}
 
 	
 
@@ -315,8 +318,6 @@ public abstract class MemorySimulatorBase {
 
 					putInMemory(p);
 
-					printMemory();
-
 				}
 
 			}
@@ -344,6 +345,8 @@ public abstract class MemorySimulatorBase {
 		for (Process p : processes) {
 
 			if (p.getStartTime() == time || p.getEndTime() == time) {
+				
+				printMemory();
 
 				return true;
 
@@ -363,7 +366,7 @@ public abstract class MemorySimulatorBase {
 
 		for (Process p : processes) {
 
-			if (p.getEndTime() == time) {
+			if (p.getEndTime() <= time) {
 
 				return true;
 
@@ -400,16 +403,26 @@ public abstract class MemorySimulatorBase {
 			Random rand = new Random();
 
 			int count = CURRENT_TIME ;
+			
 
-			while(targetSlot == -1) {
+			while( targetSlot == -1) {
 
-				timeStepUntil(count++);
+				wait(count++);
 
 				targetSlot = getNextSlot(p.getSize());
+				
+				if(CURRENT_TIME > 500 ) {
+					Externals.endOfSimulation();;
+				}
 
 			}
+			
+			
 
 		}
+		
+		
+		
 
 		debugPrintln("Got a target slot of " + targetSlot + " for pid " + p.getPid());
 
