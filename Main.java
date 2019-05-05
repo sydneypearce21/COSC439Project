@@ -16,13 +16,13 @@ public class Main {
 		String simName = args[0].trim();
 		MemorySimulatorBase sim = null;
 		
-		if ( simName.equals("first") ) {
+		if ( "first".equals(simName) ) {
 			sim = new FirstFitMemorySimulator( );
-		} else if ( simName.equals("best") ) {
+		} else if ( "best".equals(simName) ) {
 			sim = new BestFitMemorySimulator();
-		} else if ( simName.equals("next") ) {
+		} else if ( "next".equals(simName) ) {
 			sim = new NextFitMemorySimulator();
-		} else if ( simName.equals("worst") ) {
+		} else if ( "worst".equals(simName) ) {
 			sim = new WorstFitMemorySimulator();
 		}
 			else {
@@ -34,7 +34,6 @@ public class Main {
 	
 		TIME = 500;
 		while (TIME > 0) {
-			//System.out.print("memsim> ");
 			sim.timeStepUntil(TIME);
 			
 			TIME--;

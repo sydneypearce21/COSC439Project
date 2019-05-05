@@ -1,16 +1,8 @@
 import java.text.DecimalFormat;
-
 import java.util.ArrayList;
-
 import java.util.HashMap;
-
 import java.util.Random;
-
 import java.util.concurrent.CopyOnWriteArrayList;
-
-
-
-
 /**
 
  * Starter code for a memory simulator.
@@ -20,71 +12,47 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 
 public abstract class MemorySimulatorBase {
-
-	protected static final char FREE_MEMORY = '.';
-
-	protected static final char RESERVED_MEMORY = '#';
-
-	protected int CURRENT_TIME = -1;
-
 	
-
+	private static final int MemSize = 1024;
+	
+	protected static final char FREE_MEMORY = '.';
+	protected static final char RESERVED_MEMORY = '#';
+	protected int CURRENT_TIME = -1;
 	protected char[] main_memory;
 
 	protected CopyOnWriteArrayList<Process> processes = new CopyOnWriteArrayList<Process>();
 
-	
-
 	protected static final boolean MEMSIM_DEBUG = true;
-	
-	
-	
-
-
-	
-
-	/**
-
-	 * Default constructor that takes an input file
-
-	 * @param fileName
-
-	 */
 
 	public MemorySimulatorBase() {
-
 		
-
 		Random rand = new Random();
 
-		main_memory = new char[1024];
-
-		
+		main_memory = new char[MemSize];
 
 		for( int i = 0; i < 26 ; i++) {
-
-			final String chords = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	        char s = chords.charAt(i);
-	 
-
-			int startTime = rand.nextInt(500) + 1;
-
-			int endTime = rand.nextInt(500)+1;
-
 			
-
+			// this picks a char to use as the pid, 
+			//since the memory is represented as a char [] we can't have too many processes with unique id's our choice of id's is limited
+			final String idChoices = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	        char id = idChoices.charAt(i);
+	        
+	        // the start times and end times are randomly generated
+			int startTime = rand.nextInt(500) + 1;
+			int endTime = rand.nextInt(500)+1;
+			
+			// the end time must be after the start time
 			while(startTime >= endTime )
-
 				endTime = rand.nextInt(500)+1;
 
-			
+			int size = rand.nextInt(300)+ 1;
+			Process p = new Process(id, size, startTime, endTime );
 
-			Process p = new Process(s, rand.nextInt(300)+ 1, startTime, endTime );
-
-			processes.addIfAbsent(p) ;
+			processes.addIfAbsent(p);
 
 		}
 
+		
 		initializeMainMemory();
 
 		for (Process p : processes) {
@@ -93,114 +61,30 @@ public abstract class MemorySimulatorBase {
 
 			debugPrintln("  Start Time: " + p.getStartTime());
 
-			debugPrintln("  End Time: " + p.getEndTime());
+			debugPrintln("Time needed by process: " + p.getTimeInMemory() );
 
 		}
 
 	}
-
 	
-
 	/**
-
 	 * Return the index of the first position of the next available slot
-
 	 * in memory
-
 	 * 
-
 	 * Different memory strategy classes must override this abstract method.
-
 	 * @param slotSize The size of the requested slot
-
 	 * @return The index of the first position of an available requested block
-
 	 */
-
 	protected abstract int getNextSlot(int slotSize);
-
 	
-
-	/**
-
-	 * Move the simulator one virtual time step into the future,
-
-	 * handling processes leaving and entering the system.
-
-	 * NOTE: Not used now that the project specifications have changed.
-
-	 */
-
-	public void timeStep() {
-
-		CURRENT_TIME++;
-
-		while (!eventOccursAt(CURRENT_TIME)) {
-
-			debugPrintln("Fast-forwarding past boring time " + CURRENT_TIME);
-
-			CURRENT_TIME++;
-
-		}
-
-		
-
-		debugPrintln("=========== TIME IS NOW " + CURRENT_TIME + " ============");
-
-		
-
-		//Processes exit the system
-
-		ArrayList<Process> toRemove = new ArrayList<Process>();
-
-		for (Process p : processes) {
-
-			if (p.getEndTime() == CURRENT_TIME) {
-
-				debugPrintln("Removing process " + p.getPid());
-
-				removeFromMemory(p);
-
-				toRemove.add(p);
-
-			}
-
-		} 
-
-		for (Process p : toRemove) {
-
-			processes.remove(p);
-
-		}
-
-		
-
-		//Processes enter the system
-
-		for (Process p : processes) {
-
-			if (p.getStartTime() == CURRENT_TIME) {
-
-				debugPrintln("Adding process " + p.getPid());
-
-				putInMemory(p);
-
-			}
-
-		}
-
-	}
-
 	
-
-	
-
+	// This is the wait functionality that I added.
 	public void wait(int t) {
-
+		
 		while (CURRENT_TIME < t) {
 
 			CURRENT_TIME++;
-
+			
 			while (!eventOccursAt(CURRENT_TIME) && CURRENT_TIME < t) {
 
 				debugPrintln("Fast-forwarding past boring time " + CURRENT_TIME);
@@ -208,13 +92,9 @@ public abstract class MemorySimulatorBase {
 				CURRENT_TIME++;
 
 			}
-
-			
-
 			debugPrintln("=========== WAIT IS NOW " + CURRENT_TIME + " ============");
 
 			
-
 			//Processes exit the system
 
 			ArrayList<Process> toRemove = new ArrayList<Process>();
@@ -225,7 +105,8 @@ public abstract class MemorySimulatorBase {
 
 				// made <= to deal with processes that have their end time pass due to waiting to enter into memory
 
-				if (p.getEndTime() <= CURRENT_TIME) {
+				int timeInMemory = CURRENT_TIME - p.getStartTime();
+				if (p.getTimeInMemory() <= timeInMemory) {
 
 					debugPrintln("Removing process " + p.getPid());
 
@@ -287,8 +168,9 @@ public abstract class MemorySimulatorBase {
 				
 
 				// made <= to deal with processes that have their end time pass due to waiting to enter into memory
-
-				if (p.getEndTime() <= CURRENT_TIME) {
+				int timeInMemory = CURRENT_TIME - p.getStartTime();
+				
+				if (p.getTimeInMemory() <= timeInMemory) {
 
 					debugPrintln("Removing process " + p.getPid());
 
@@ -344,7 +226,7 @@ public abstract class MemorySimulatorBase {
 
 		for (Process p : processes) {
 
-			if (p.getStartTime() == time || p.getEndTime() == time) {
+			if (p.getStartTime() == time || (p.getStartTime() + p.getTimeInMemory()) == time) {
 				
 				printMemory();
 
@@ -366,7 +248,7 @@ public abstract class MemorySimulatorBase {
 
 		for (Process p : processes) {
 
-			if (p.getEndTime() <= time) {
+			if ((CURRENT_TIME - p.getStartTime())<= time) {
 
 				return true;
 
@@ -412,7 +294,7 @@ public abstract class MemorySimulatorBase {
 				targetSlot = getNextSlot(p.getSize());
 				
 				if(CURRENT_TIME > 500 ) {
-					Externals.endOfSimulation();;
+					Externals.endOfSimulation();
 				}
 
 			}

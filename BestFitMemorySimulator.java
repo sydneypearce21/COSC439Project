@@ -20,6 +20,7 @@ public class BestFitMemorySimulator extends MemorySimulatorBase {
 	 * @param slotSize The size of the requested slot
 	 * @return The index of the first position of an available requested block
 	 */
+	@Override
 	public int getNextSlot(int slotSize) {
 		
 		int best_start = -1;

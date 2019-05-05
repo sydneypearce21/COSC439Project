@@ -47,12 +47,12 @@ public class Process implements Comparable<Process> {
 		return start_time;
 	}
 	
-	/**
-	 * Get the virtual time at which the process leaves memory
-	 * @return The virtual time at which the process leaves memory
-	 */
-	public int getEndTime() {
-		return end_time;
+	
+	// added getting units the process needs to be in memory
+	
+	public int getTimeInMemory() {
+		
+		return (end_time - start_time);
 	}
 
 	/**
