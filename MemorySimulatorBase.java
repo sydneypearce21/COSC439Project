@@ -23,6 +23,8 @@ public abstract class MemorySimulatorBase {
 	protected CopyOnWriteArrayList<Process> processes = new CopyOnWriteArrayList<Process>();
 
 	protected static final boolean MEMSIM_DEBUG = true;
+	
+	private int timeAdded;
 
 	public MemorySimulatorBase() {
 		
@@ -105,18 +107,20 @@ public abstract class MemorySimulatorBase {
 
 				// made <= to deal with processes that have their end time pass due to waiting to enter into memory
 
-				int timeInMemory = CURRENT_TIME - p.getStartTime();
-				if (p.getTimeInMemory() <= timeInMemory) {
+				int timeInMemory = CURRENT_TIME - p.getTimeAdded();
+					for(int k = 0; k < main_memory.length; k++ ) {
+						if (timeInMemory >= p.getTimeInMemory() && main_memory[k] == p.getPid()) {
 
-					debugPrintln("Removing process " + p.getPid());
+							debugPrintln("Removing process " + p.getPid());
 
-					removeFromMemory(p);
+							removeFromMemory(p);
 
-					toRemove.add(p);
+							toRemove.add(p);
 
-				}
+						}
+					}
 
-			} 
+			}	 
 
 			for (Process p : toRemove) {
 
@@ -168,16 +172,18 @@ public abstract class MemorySimulatorBase {
 				
 
 				// made <= to deal with processes that have their end time pass due to waiting to enter into memory
-				int timeInMemory = CURRENT_TIME - p.getStartTime();
+				int timeInMemory = CURRENT_TIME - p.getTimeAdded();
 				
-				if (p.getTimeInMemory() <= timeInMemory) {
+				for(int k = 0; k < main_memory.length; k++ ) {
+					if ( timeInMemory >= p.getTimeInMemory() && main_memory[k] == p.getPid() ) {
 
-					debugPrintln("Removing process " + p.getPid());
+						debugPrintln("Removing process " + p.getPid());
 
-					removeFromMemory(p);
+						removeFromMemory(p);
 
-					toRemove.add(p);
+						toRemove.add(p);
 
+					}
 				}
 
 			} 
@@ -226,7 +232,7 @@ public abstract class MemorySimulatorBase {
 
 		for (Process p : processes) {
 
-			if (p.getStartTime() == time || (p.getStartTime() + p.getTimeInMemory()) == time) {
+			if (p.getStartTime() == time || (p.getTimeAdded() + p.getTimeInMemory()) == time) {
 				
 				printMemory();
 
@@ -248,7 +254,7 @@ public abstract class MemorySimulatorBase {
 
 		for (Process p : processes) {
 
-			if ((CURRENT_TIME - p.getStartTime())<= time) {
+			if ((CURRENT_TIME - p.getTimeAdded())<= time) {
 
 				return true;
 
@@ -280,20 +286,19 @@ public abstract class MemorySimulatorBase {
 
 			targetSlot = getNextSlot(p.getSize());
 
-			
-
-			Random rand = new Random();
-
 			int count = CURRENT_TIME ;
 			
 
 			while( targetSlot == -1) {
 
 				wait(count++);
+				
+				defragment();
+				
 
 				targetSlot = getNextSlot(p.getSize());
 				
-				if(CURRENT_TIME > 500 ) {
+				if(CURRENT_TIME > 50000 ) {
 					Externals.endOfSimulation();
 				}
 
@@ -303,9 +308,8 @@ public abstract class MemorySimulatorBase {
 
 		}
 		
+		p.setTimeAdded(CURRENT_TIME);
 		
-		
-
 		debugPrintln("Got a target slot of " + targetSlot + " for pid " + p.getPid());
 
 		//If we get here, we know that there's an open chunk

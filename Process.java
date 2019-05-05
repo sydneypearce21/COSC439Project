@@ -8,6 +8,7 @@ public class Process implements Comparable<Process> {
 	private int size;
 	private int start_time;
 	private int end_time;
+	private int timeAdded;
 
 	/**
 	 * Default constructor
@@ -21,6 +22,7 @@ public class Process implements Comparable<Process> {
 		this.size 			= size;
 		this.start_time 	= start_time;
 		this.end_time 		= end_time;
+		this.timeAdded      = start_time;
 	}
 
 	/**
@@ -45,6 +47,14 @@ public class Process implements Comparable<Process> {
 	 */
 	public int getStartTime() {
 		return start_time;
+	}
+	
+	public void setTimeAdded(int added) {
+		this.timeAdded = added;
+	}
+	
+	public int getTimeAdded() {
+		return timeAdded;
 	}
 	
 	

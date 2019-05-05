@@ -32,7 +32,7 @@ public class Main {
 		sim.timeStepUntil(0);
 		sim.printMemory();
 	
-		TIME = 500;
+		TIME = 50000;
 		while (TIME > 0) {
 			sim.timeStepUntil(TIME);
 			
