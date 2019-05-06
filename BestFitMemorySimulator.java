@@ -7,8 +7,8 @@
 public class BestFitMemorySimulator extends MemorySimulatorBase {
 	
 	/**
-	 * Default constructor that initializes the sim using an input file
-	 * @param fileName The input file
+	 * Default constructor that initializes the sim
+	 * 
 	 */
 	public BestFitMemorySimulator() {
 		super();

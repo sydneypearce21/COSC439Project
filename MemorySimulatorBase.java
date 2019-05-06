@@ -248,26 +248,6 @@ public abstract class MemorySimulatorBase {
 
 	
 
-	
-
-	private boolean didAProcessEnd(int time) {
-
-		for (Process p : processes) {
-
-			if ((CURRENT_TIME - p.getTimeAdded())<= time) {
-
-				return true;
-
-			}
-
-		}
-
-		return false;
-
-	}
-
-	
-
 	/**
 
 	 * Put a process into memory

@@ -2,7 +2,7 @@
 
 /**
  * Main class sets up and runs the simulation,
- * including managing user input and timestep control.
+ *
  */
 public class Main {
 	
