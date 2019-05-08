@@ -3,7 +3,7 @@
   realizations="true" associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
   <class id="1" language="java" name="Main" project="MemorySimulator" file="/MemorySimulator/Main.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="839" y="100"/>    
+    <position height="-1" width="-1" x="881" y="84"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -66,7 +66,7 @@
   </class>  
   <class id="8" language="java" name="MemorySimulatorBase" project="MemorySimulator" 
     file="/MemorySimulator/MemorySimulatorBase.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="537" y="197"/>    
+    <position height="-1" width="-1" x="478" y="25"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -77,23 +77,47 @@
     <end type="SOURCE" refId="5"/>    
     <end type="TARGET" refId="8"/>  
   </generalization>  
-  <generalization id="10">    
+  <dependency id="10">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <dependency id="11">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="6"/>  
+  </dependency>  
+  <generalization id="12">    
     <end type="SOURCE" refId="6"/>    
     <end type="TARGET" refId="8"/>  
   </generalization>  
-  <association id="11">    
+  <association id="13">    
     <end type="SOURCE" refId="8" navigable="false" variant="ASSOCIATION">      
-      <attribute id="12" name="processes"/>      
-      <multiplicity id="13" minimum="0" maximum="2147483647"/>    
+      <attribute id="14" name="processes"/>      
+      <multiplicity id="15" minimum="0" maximum="2147483647"/>    
     </end>    
     <end type="TARGET" refId="7" navigable="true" variant="ASSOCIATION"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <generalization id="14">    
+  <dependency id="16">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="5"/>  
+  </dependency>  
+  <dependency id="17">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="8"/>  
+  </dependency>  
+  <generalization id="18">    
     <end type="SOURCE" refId="3"/>    
     <end type="TARGET" refId="8"/>  
   </generalization>  
-  <generalization id="15">    
+  <dependency id="19">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="20">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="4"/>  
+  </dependency>  
+  <generalization id="21">    
     <end type="SOURCE" refId="4"/>    
     <end type="TARGET" refId="8"/>  
   </generalization>  
