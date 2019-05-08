@@ -273,7 +273,7 @@ public abstract class MemorySimulatorBase {
 
 				wait(count++);
 				
-				defragment();
+				//defragment();
 				
 
 				targetSlot = getNextSlot(p.getSize());
