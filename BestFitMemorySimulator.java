@@ -1,4 +1,4 @@
-
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Memory strategy that puts a process in memory at a location which best
@@ -12,6 +12,10 @@ public class BestFitMemorySimulator extends MemorySimulatorBase {
 	 */
 	public BestFitMemorySimulator() {
 		super();
+	}
+	
+	public BestFitMemorySimulator(char [] mem, CopyOnWriteArrayList<Process> processes ) {
+		super( mem, processes );
 	}
 
 	/**
@@ -57,4 +61,6 @@ public class BestFitMemorySimulator extends MemorySimulatorBase {
 		
 		return best_start;
 	}
+
+	
 }

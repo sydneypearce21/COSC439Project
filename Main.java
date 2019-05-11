@@ -9,36 +9,65 @@ public class Main {
 	static int TIME;
 	
 	public static void main( String[] args ) {
-		if (args.length != 1) {
+		if (args.length != 2) {
 			Externals.invalidUsageExit();
 		}
 		
-		String simName = args[0].trim();
-		MemorySimulatorBase sim = null;
+		String simName1 = args[0].trim();
+		MemorySimulatorBase sim1 = null;
 		
-		if ( "first".equals(simName) ) {
-			sim = new FirstFitMemorySimulator( );
-		} else if ( "best".equals(simName) ) {
-			sim = new BestFitMemorySimulator();
-		} else if ( "next".equals(simName) ) {
-			sim = new NextFitMemorySimulator();
-		} else if ( "worst".equals(simName) ) {
-			sim = new WorstFitMemorySimulator();
+		if ( "first".equals(simName1) ) {
+			sim1 = new FirstFitMemorySimulator( );
+		} else if ( "best".equals(simName1) ) {
+			sim1 = new BestFitMemorySimulator();
+		} else if ( "next".equals(simName1) ) {
+			sim1 = new NextFitMemorySimulator();
+		} else if ( "worst".equals(simName1) ) {
+			sim1 = new WorstFitMemorySimulator();
 		}
 			else {
 			Externals.invalidUsageExit();
 		}
 		
-		sim.timeStepUntil(0);
-		sim.printMemory();
+		sim1.timeStepUntil(0);
+		sim1.printMemory();
 	
-		TIME = 50000;
+		TIME = 200;
 		while (TIME > 0) {
-			sim.timeStepUntil(TIME);
+			sim1.timeStepUntil(TIME);
 			
 			TIME--;
 		}
 		
-		System.out.println("No more events to process... exiting!");
+		System.out.println("No more events to process... ending this simulation!");
+		
+		
+		String simName2 = args[1].trim();
+		MemorySimulatorBase sim2 = null;
+		
+		if ( "first".equals(simName2) ) {
+			sim2 = new FirstFitMemorySimulator(sim1.main_memory, sim1.copy );
+		} else if ( "best".equals(simName2) ) {
+			sim2 = new BestFitMemorySimulator(sim1.main_memory, sim1.copy );
+		} else if ( "next".equals(simName2) ) {
+			sim2 = new NextFitMemorySimulator(sim1.main_memory, sim1.copy );
+		} else if ( "worst".equals(simName2) ) {
+			sim2 = new WorstFitMemorySimulator(sim1.main_memory, sim1.copy );
+		}
+			else {
+			Externals.invalidUsageExit();
+		}
+		
+		sim2.timeStepUntil(0);
+		sim2.printMemory();
+	
+		TIME = 200;
+		while (TIME > 0) {
+			sim2.timeStepUntil(TIME);
+			
+			TIME--;
+		}
+		
+		System.out.println("No more events to process... ending this simulation!");
 	}
 }

@@ -1,4 +1,4 @@
-
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Memory strategy that puts a process in memory at the
@@ -12,6 +12,10 @@ public class FirstFitMemorySimulator extends MemorySimulatorBase {
 	 */
 	public FirstFitMemorySimulator() {
 		super();
+	}
+	
+	public FirstFitMemorySimulator(char [] mem, CopyOnWriteArrayList<Process> processes ) {
+		super( mem, processes );
 	}
 
 	/**
@@ -39,5 +43,7 @@ public class FirstFitMemorySimulator extends MemorySimulatorBase {
 		
 		return -1;
 	}
+
+
 
 }

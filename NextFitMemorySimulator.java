@@ -1,4 +1,4 @@
-
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Memory strategy that puts a process in memory at the next fitting location
@@ -12,6 +12,10 @@ public class NextFitMemorySimulator extends MemorySimulatorBase {
 	 */
 	public NextFitMemorySimulator() {
 		super();
+	}
+	
+	public NextFitMemorySimulator(char [] mem, CopyOnWriteArrayList<Process> processes ) {
+		super( mem, processes );
 	}
 
 	/**
