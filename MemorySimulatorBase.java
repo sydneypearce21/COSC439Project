@@ -112,16 +112,17 @@ public abstract class MemorySimulatorBase {
 			for (Process p : processes) {
 				// made <= to deal with processes that have their end time pass due to waiting to enter into memory
 				int timeInMemory = CURRENT_TIME - p.getTimeAdded();
-				remove = timeInMemory >= p.getTimeInMemory();
 					for(int k = 0; k < main_memory.length; k++ ) {
-						if (remove && main_memory[k] == p.getPid()) {
+						if (timeInMemory >= p.getTimeInMemory() && main_memory[k] == p.getPid()) {
 							debugPrintln("Removing process " + p.getPid());
 							removeFromMemory(p);
+							remove = true;
 							toRemove.add(p);
 						}
 					}
 					if(remove)
 						defragment();
+					remove = false;
 			}	 
 			for (Process p : toRemove) {
 				processes.remove(p);
@@ -162,9 +163,6 @@ public abstract class MemorySimulatorBase {
 							toRemove.add(p);
 						}
 					}
-					if(remove)
-						defragment();
-					remove = false;
 			}	 
 			for (Process p : toRemove) {
 				processes.remove(p);
