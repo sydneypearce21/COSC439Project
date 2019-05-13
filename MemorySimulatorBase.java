@@ -207,6 +207,7 @@ public abstract class MemorySimulatorBase {
 		if (targetSlot == -1) {
 			
 			defragment();
+			printMemory();
 			targetSlot = getNextSlot(p.getSize());
 			int count = CURRENT_TIME ;
 			
