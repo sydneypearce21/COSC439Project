@@ -11,7 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
  */
 
-public abstract class MemorySimulatorBase implements Cloneable {
+public abstract class MemorySimulatorBase {
 	
 	private static final int MemSize = 400;
 	
@@ -95,6 +95,8 @@ public abstract class MemorySimulatorBase implements Cloneable {
 	// This is the wait functionality that I added.
 	public void wait(int t) {
 		
+		boolean remove = false;
+		
 		while (CURRENT_TIME < t) {
 			CURRENT_TIME++;		
 			while (!eventOccursAt(CURRENT_TIME) && CURRENT_TIME < t) {
@@ -110,17 +112,22 @@ public abstract class MemorySimulatorBase implements Cloneable {
 			for (Process p : processes) {
 				// made <= to deal with processes that have their end time pass due to waiting to enter into memory
 				int timeInMemory = CURRENT_TIME - p.getTimeAdded();
+				remove = timeInMemory >= p.getTimeInMemory();
 					for(int k = 0; k < main_memory.length; k++ ) {
-						if (timeInMemory >= p.getTimeInMemory() && main_memory[k] == p.getPid()) {
+						if (remove && main_memory[k] == p.getPid()) {
 							debugPrintln("Removing process " + p.getPid());
 							removeFromMemory(p);
 							toRemove.add(p);
 						}
 					}
+					if(remove)
+						defragment();
 			}	 
 			for (Process p : toRemove) {
 				processes.remove(p);
 			}
+			
+			
 		}
 	}
 
@@ -130,35 +137,40 @@ public abstract class MemorySimulatorBase implements Cloneable {
 	 */
 	public void timeStepUntil(int t) {
 
+		boolean remove = false;
+		
 		while (CURRENT_TIME < t) {
-			CURRENT_TIME++;
-			
+			CURRENT_TIME++;		
 			while (!eventOccursAt(CURRENT_TIME) && CURRENT_TIME < t) {
 				debugPrintln("Fast-forwarding past boring time " + CURRENT_TIME);
 				CURRENT_TIME++;
 			}
-
-			debugPrintln("=========== TIME IS NOW " + CURRENT_TIME + " ============");
-
+			
+			debugPrintln("=========== Time IS NOW " + CURRENT_TIME + " ============");
+			
 			//Processes exit the system
 			ArrayList<Process> toRemove = new ArrayList<Process>();
 
 			for (Process p : processes) {
-				// made <= to deal with processes that have their end time pass due to waiting to enter into memory
+				// made <= to deal with processes that have their end time pass, due to waiting to enter into memory
 				int timeInMemory = CURRENT_TIME - p.getTimeAdded();
-				
-				for(int k = 0; k < main_memory.length; k++ ) {
-					if ( timeInMemory >= p.getTimeInMemory() && main_memory[k] == p.getPid() ) {
-						debugPrintln("Removing process " + p.getPid());
-						removeFromMemory(p);
-						toRemove.add(p);
+				remove = timeInMemory >= p.getTimeInMemory();
+					for(int k = 0; k < main_memory.length; k++ ) {
+						if (remove && main_memory[k] == p.getPid()) {
+							debugPrintln("Removing process " + p.getPid());
+							removeFromMemory(p);
+							toRemove.add(p);
+						}
 					}
-				}
-			} 
-
+					if(remove)
+						defragment();
+					remove = false;
+			}	 
 			for (Process p : toRemove) {
 				processes.remove(p);
 			}
+			
+			
 			//Processes enter the system
 			for (Process p : processes) {
 				if (p.getStartTime() == CURRENT_TIME) {
@@ -202,8 +214,6 @@ public abstract class MemorySimulatorBase implements Cloneable {
 			
 			while( targetSlot == -1) {
 				wait(count++);
-				
-				//defragment();
 				
 				targetSlot = getNextSlot(p.getSize());
 				if(CURRENT_TIME > 50000 ) {
@@ -272,6 +282,8 @@ public abstract class MemorySimulatorBase implements Cloneable {
 		HashMap<Character, Integer> processesMoved = new HashMap<Character, Integer>();
 
 		DecimalFormat f = new DecimalFormat("##.00");
+		
+		printMemory();
 
 		System.out.println("Performing defragmentation...");
 		int destination = 80;

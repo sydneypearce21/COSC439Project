@@ -28,7 +28,7 @@ public class Main {
 			else {
 			Externals.invalidUsageExit();
 		}
-		
+	
 		sim1.timeStepUntil(0);
 		sim1.printMemory();
 	
