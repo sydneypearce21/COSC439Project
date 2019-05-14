@@ -34,7 +34,7 @@ public class Main {
 	
 		int count1 = 0;
 		while (sim1.processesRemaining() != 0) {
-			sim1.timeStepUntil(count1 ++);
+			sim1.timeStepUntil(count1++);
 		}
 		
 		System.out.println("No more events to process... ending this simulation!");
@@ -61,7 +61,7 @@ public class Main {
 	
 		int count2 = 0;
 		while (sim2.processesRemaining() != 0) {
-			sim2.timeStepUntil(count2 ++);
+			sim2.timeStepUntil(count2++);
 		}
 		
 		System.out.println("No more events to process... ending this simulation!");

@@ -36,7 +36,7 @@ public abstract class MemorySimulatorBase {
 
 		main_memory = new char[MemSize];
 
-		for( int i = 0; i < 10 ; i++) {
+		for( int i = 0; i < 7 ; i++) {
 			
 			// this picks a char to use as the pid, 
 			//since the memory is represented as a char [] we can't have too many processes with unique id's our choice of id's is limited
@@ -51,7 +51,7 @@ public abstract class MemorySimulatorBase {
 			while(startTime >= endTime )
 				endTime = rand.nextInt(100)+1;
 
-			int size = rand.nextInt(150)+ 1;
+			int size = rand.nextInt(200)+ 1;
 			Process p = new Process(id, size, startTime, endTime );
 
 			processes.addIfAbsent(p);
@@ -129,7 +129,15 @@ public abstract class MemorySimulatorBase {
 				processes.remove(p);
 			}
 			
+			for (Process p : processes) {
+				if (p.getStartTime() == CURRENT_TIME) {
+					debugPrintln("Adding process " + p.getPid());
+					putInMemory(p);
+			}
+		}
 			
+			if(eventOccursAt(CURRENT_TIME))
+				printMemory();
 		}
 	}
 
@@ -138,8 +146,8 @@ public abstract class MemorySimulatorBase {
 	 * @param t The time to which to move the simulator
 	 */
 	public void timeStepUntil(int t) {
-
-		boolean remove = false;
+		
+		
 		
 		while (CURRENT_TIME < t) {
 			CURRENT_TIME++;		
@@ -156,9 +164,8 @@ public abstract class MemorySimulatorBase {
 			for (Process p : processes) {
 				// made <= to deal with processes that have their end time pass, due to waiting to enter into memory
 				int timeInMemory = CURRENT_TIME - p.getTimeAdded();
-				remove = timeInMemory >= p.getTimeInMemory();
 					for(int k = 0; k < main_memory.length; k++ ) {
-						if (remove && main_memory[k] == p.getPid()) {
+						if (timeInMemory >= p.getTimeInMemory() && main_memory[k] == p.getPid()) {
 							debugPrintln("Removing process " + p.getPid());
 							removeFromMemory(p);
 							toRemove.add(p);
@@ -169,18 +176,18 @@ public abstract class MemorySimulatorBase {
 				processes.remove(p);
 			}
 			
-			
 			//Processes enter the system
 			for (Process p : processes) {
 				if (p.getStartTime() == CURRENT_TIME) {
 					debugPrintln("Adding process " + p.getPid());
 					putInMemory(p);
-				}
 			}
+		}
 			
 			if(eventOccursAt(CURRENT_TIME))
 				printMemory();
 		}
+		
 	}
 	
 	/**
