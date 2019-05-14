@@ -53,7 +53,10 @@ public abstract class MemorySimulatorBase {
 			while(startTime >= endTime )
 				endTime = rand.nextInt(100)+1;
 
-			int size = rand.nextInt(200)+ 1;
+			int size;
+			do {
+			size = rand.nextInt(150)+ 1;
+			}while(size % 2 !=0);
 			Process p = new Process(id, size, startTime, endTime );
 
 			processes.addIfAbsent(p);
