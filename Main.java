@@ -32,11 +32,9 @@ public class Main {
 		sim1.timeStepUntil(0);
 		sim1.printMemory();
 	
-		TIME = 200;
-		while (TIME > 0) {
-			sim1.timeStepUntil(TIME);
-			
-			TIME--;
+		int count1 = 0;
+		while (sim1.processesRemaining() != 0) {
+			sim1.timeStepUntil(count1 ++);
 		}
 		
 		System.out.println("No more events to process... ending this simulation!");
@@ -61,11 +59,9 @@ public class Main {
 		sim2.timeStepUntil(0);
 		sim2.printMemory();
 	
-		TIME = 200;
-		while (TIME > 0) {
-			sim2.timeStepUntil(TIME);
-			
-			TIME--;
+		int count2 = 0;
+		while (sim2.processesRemaining() != 0) {
+			sim2.timeStepUntil(count2 ++);
 		}
 		
 		System.out.println("No more events to process... ending this simulation!");

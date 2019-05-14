@@ -23,6 +23,7 @@ public abstract class MemorySimulatorBase {
 
 	protected CopyOnWriteArrayList<Process> processes = new CopyOnWriteArrayList<Process>();
 
+	// must leave MEMSIM_DEBUG to true
 	protected static final boolean MEMSIM_DEBUG = true;
 	
 	private int timeAdded;
@@ -176,6 +177,9 @@ public abstract class MemorySimulatorBase {
 					putInMemory(p);
 				}
 			}
+			
+			if(eventOccursAt(CURRENT_TIME))
+				printMemory();
 		}
 	}
 	
@@ -189,7 +193,6 @@ public abstract class MemorySimulatorBase {
 
 		for (Process p : processes) {
 			if (p.getStartTime() == time || (p.getTimeAdded() + p.getTimeInMemory()) == time) {
-				printMemory();
 				return true;
 			}
 		}
