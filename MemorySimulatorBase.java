@@ -13,6 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class MemorySimulatorBase {
 	
+	//change to either 1024 or 400
 	private static final int MemSize = 400;
 	
 	protected static final char FREE_MEMORY = '.';
@@ -35,7 +36,8 @@ public abstract class MemorySimulatorBase {
 		Random rand = new Random();
 
 		main_memory = new char[MemSize];
-
+		
+		// change to either 7 or 26
 		for( int i = 0; i < 7 ; i++) {
 			
 			// this picks a char to use as the pid, 
