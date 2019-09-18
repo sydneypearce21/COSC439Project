@@ -26,5 +26,3 @@ Submitted Files:
      Employs a next-fit memory management strategy
  - WorstFitMemorySimulator.java
      Employs a worst-fit memory management strategy
- - Makefile
-     Project build script
