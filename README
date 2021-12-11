@@ -1,13 +1,16 @@
-==========================================================================
-Names:      Aviel Cohen, Angela Gurfolino, Dylan Van Meer
-Date:       14 - 05 - 2019
-Assignment: Group Project
-==========================================================================
+COSC439-001
+OS Final Project : Memory Management Simulation
+
+Names: Milan Black, Andrew Fleming, Sydney Pearce
+
 
 Build Instructions: Makefile included
 
 Run Instructions:
- USAGE: java Main "{ first | best | next | worst }" "{ first | best | next | worst }"
+    --> java Main
+    --> instructions will then be provided
+    --> choose your fit to display (first, best, next, worst)
+    --> output simulation of that memory fit will display
 
 Submitted Files:
  - Main.java: 
