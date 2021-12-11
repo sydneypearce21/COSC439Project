@@ -9,7 +9,6 @@ public class Main {
 			Externals.invalidUsageExit();
 		}
 		
-		//String simName1 = args[0].trim();
 		MemorySimulatorBase sim1 = null;
 
 		System.out.println("============================================");

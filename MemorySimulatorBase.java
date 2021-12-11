@@ -4,11 +4,8 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 /**
-
  * Starter code for a memory simulator.
-
  * Simulator strategies extend this abstract class.
-
  */
 
 public abstract class MemorySimulatorBase {
@@ -98,7 +95,6 @@ public abstract class MemorySimulatorBase {
 	protected abstract int getNextSlot(int slotSize);
 	
 
-	// This is the wait functionality that I added.
 	public void wait(int t) {
 		
 		boolean remove = false;
@@ -106,11 +102,9 @@ public abstract class MemorySimulatorBase {
 		while (CURRENT_TIME < t) {
 			CURRENT_TIME++;		
 			while (!eventOccursAt(CURRENT_TIME) && CURRENT_TIME < t) {
-				debugPrintln("Fast-forwarding past boring time " + CURRENT_TIME);
 				CURRENT_TIME++;
 			}
 			
-			debugPrintln("=========== WAIT IS NOW " + CURRENT_TIME + " ============");
 			
 			//Processes exit the system
 			ArrayList<Process> toRemove = new ArrayList<Process>();
@@ -120,7 +114,6 @@ public abstract class MemorySimulatorBase {
 				int timeInMemory = CURRENT_TIME - p.getTimeAdded();
 					for(int k = 0; k < main_memory.length; k++ ) {
 						if (timeInMemory >= p.getTimeInMemory() && main_memory[k] == p.getPid()) {
-							debugPrintln("Removing process " + p.getPid());
 							removeFromMemory(p);
 							remove = true;
 							toRemove.add(p);
@@ -136,7 +129,6 @@ public abstract class MemorySimulatorBase {
 			
 			for (Process p : processes) {
 				if (p.getStartTime() == CURRENT_TIME) {
-					debugPrintln("Adding process " + p.getPid());
 					putInMemory(p);
 			}
 		}
@@ -156,12 +148,9 @@ public abstract class MemorySimulatorBase {
 		
 		while (CURRENT_TIME < t) {
 			CURRENT_TIME++;		
-			while (!eventOccursAt(CURRENT_TIME) && CURRENT_TIME < t) {
-				debugPrintln("Fast-forwarding past boring time " + CURRENT_TIME);
 				CURRENT_TIME++;
 			}
-			
-			debugPrintln("=========== Time IS NOW " + CURRENT_TIME + " ============");
+
 			
 			//Processes exit the system
 			ArrayList<Process> toRemove = new ArrayList<Process>();
@@ -171,7 +160,6 @@ public abstract class MemorySimulatorBase {
 				int timeInMemory = CURRENT_TIME - p.getTimeAdded();
 					for(int k = 0; k < main_memory.length; k++ ) {
 						if (timeInMemory >= p.getTimeInMemory() && main_memory[k] == p.getPid()) {
-							debugPrintln("Removing process " + p.getPid());
 							removeFromMemory(p);
 							toRemove.add(p);
 						}
@@ -184,7 +172,6 @@ public abstract class MemorySimulatorBase {
 			//Processes enter the system
 			for (Process p : processes) {
 				if (p.getStartTime() == CURRENT_TIME) {
-					debugPrintln("Adding process " + p.getPid());
 					putInMemory(p);
 			}
 		}
@@ -193,7 +180,6 @@ public abstract class MemorySimulatorBase {
 				printMemory();
 		}
 		
-	}
 	
 	/**
 	 * Find whether an event occurs at a specific time
@@ -238,7 +224,6 @@ public abstract class MemorySimulatorBase {
 		
 		//If we get here, we know that there's an open chunk
 		p.setTimeAdded(CURRENT_TIME);
-		debugPrintln("Got a target slot of " + targetSlot + " for pid " + p.getPid());
 
 		
 		for (int i = 0; i < p.getSize(); i++) {
@@ -324,28 +309,6 @@ public abstract class MemorySimulatorBase {
 	}
 
 	/**
-	 * Print a string if a debug flag is set.
-	 * Do not include a newline.
-	 * @param toPrint The string to print
-	 */
-	private static void debugPrint(String toPrint) {
-		if (MEMSIM_DEBUG == true) {
-			System.out.print(toPrint);
-		}
-	}
-	
-	/**
-	 * Print a string if a debug flag is set.
-	 * Include a newline.
-	 * @param toPrint The string to print
-	 */
-	private static void debugPrintln(String toPrint) {
-		if (MEMSIM_DEBUG == true) {
-			System.out.println(toPrint);
-		}
-	}
-
-	/**
 	 * Get the number of processes with events remaining in the simulator
 	 * @return The number of processes with events remaining in the simulator
 	 */
@@ -353,7 +316,6 @@ public abstract class MemorySimulatorBase {
 		return processes.size();
 	}
 	
-	
-	
-	
 }
+	
+	
